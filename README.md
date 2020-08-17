@@ -77,4 +77,4 @@ dispatchGroup.notify(queue: DispatchQueue.main) {
     print("All work is done")
 }
 ```
-Remember that count of `.enter()` and `.leave()` calls must be equal otherwise `.notify` completion block will never be executed.
+Remember that count of `.enter()` and `.leave()` calls must be equal otherwise `.notify` completion block will never be executed or will be executed not in time.
