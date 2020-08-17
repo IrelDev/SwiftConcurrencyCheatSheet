@@ -62,6 +62,8 @@ how quickly it should be completed.
 ## Dispatch Groups
 Dispatch groups allow you to organize tasks into groups that can perform completion blocks after tasks are completed. For example, the code below will print `Work One` at first, `Work Two` after two seconds delay, and `All work is done` at the end.
 ```swift
+let dispatchGroup = DispatchGroup()
+
 DispatchQueue.global(qos: .background).async {
     print("Work One")
     
@@ -75,3 +77,4 @@ dispatchGroup.notify(queue: DispatchQueue.main) {
     print("All work is done")
 }
 ```
+Remember that count of `.enter()` and `.leave()` calls must be equal otherwise `.notify` completion block will never be executed.
