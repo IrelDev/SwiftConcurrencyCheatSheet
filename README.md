@@ -1,6 +1,6 @@
 # SwiftConcurrencyCheatSheet
 
-## DispatchQueues
+## Dispatch Queues
 Dispatch queue is an object that manages the execution of tasks serially or 
 concurrently on your app's main thread or on a background thread. 
 
@@ -57,5 +57,21 @@ how quickly it should be completed.
 - `.utility` is used for long-running tasks that may have a progress indicator. 
 - `.background` is used for lowest priority tasks, such as server synchronization. 
 - `.default` is used for tasks that  perform active work on the user's behalf. 
-- `.unspecified` should not be used directly unless you know 
-what are you doing. 
+- `.unspecified` should not be used directly unless you know what are you doing. 
+
+## Dispatch Groups
+Dispatch groups allow you to organize tasks into groups that can perform completion blocks after tasks are completed. For example, the code below will print `Work One` at first, `Work Two` after two seconds delay, and `All work is done` at the end.
+```swift
+DispatchQueue.global(qos: .background).async {
+    print("Work One")
+    
+    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+        print("Work Two")
+        dispatchGroup.leave()
+    }
+}
+
+dispatchGroup.notify(queue: DispatchQueue.main) {
+    print("All work is done")
+}
+```
