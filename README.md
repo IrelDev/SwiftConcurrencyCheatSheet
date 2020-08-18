@@ -22,7 +22,7 @@ If you call `serialQueue.async { }` it will behave exactly like `serialQueue.syn
 
 ## Main Queue
 The **MAIN** queue is the  dispatch queue associated with the main thread that's responsible for UI. 
-You should NEVER execute something synchronously in the main queue unless it is related to the UI. Otherwise, it will freeze your app until your synchronous task is completed. 
+You should **NEVER** execute something synchronously in the main queue unless it is related to the UI. Otherwise, it will freeze your app until your synchronous task is completed. 
 
 In addition, all `DispatchQueue.main.sync` calls should **NEVER** be called from the 
 main thread, otherwise, it will cause deadlock. 
@@ -78,3 +78,23 @@ dispatchGroup.notify(queue: DispatchQueue.main) {
 }
 ```
 Remember that count of `.enter()` and `.leave()` calls must be equal otherwise `.notify` completion block will never be executed or will be executed not in time.
+
+## Dispatch Semaphores
+A dispatch semaphore is an efficient implementation of a traditional counting semaphore which is defined as a non-negative integer variable and what a dispatch semaphore does is limit the number of concurrent tasks performed at a time.
+
+You increment a semaphore count by calling the `.signal()` method, and decrement a semaphore count or wait for a signal by calling `.wait()`.
+For example, the code below will print two task numbers every 2 seconds.
+```swift
+let semaphore = DispatchSemaphore(value: 2)
+
+for index in 1 ..< 5 {
+    DispatchQueue.global(qos: .utility).async {
+        semaphore.wait()
+        
+        Thread.sleep(forTimeInterval: 2)
+        print("Task number is \(index)")
+        
+        semaphore.signal()
+    }
+}
+```
