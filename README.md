@@ -173,3 +173,30 @@ queue.addOperation(blockOperation)
 print("Operation queue does not block the main thread because it's concurrent so that line will run first")
 ```
 Remember that you can pause any operation queue by setting the isSuspended property to true.
+
+## Subclassing Operations
+You can create reusable operations by subclassing Operation class. For example, the code below is the synchronous re-implementation of code used in the Block Operations section.
+```swift
+import Foundation
+
+class CustomOperation: Operation {
+    var executionBlocksCount: Int
+    
+    init(executionBlocksCount: Int) {
+        self.executionBlocksCount = executionBlocksCount
+        super.init()
+    }
+    override func main() {
+        for index in 0 ..< executionBlocksCount + 1 {
+            Thread.sleep(forTimeInterval: TimeInterval(index))
+            print("Thread slept for \(index) seconds")
+        }
+    }
+}
+let customOperation = CustomOperation(executionBlocksCount: 2)
+customOperation.completionBlock = {
+    print("Custom Operation is Completed")
+}
+customOperation.start()
+```
+Note that this code is synchronous because in the for in loop we don't add any execution blocks.
