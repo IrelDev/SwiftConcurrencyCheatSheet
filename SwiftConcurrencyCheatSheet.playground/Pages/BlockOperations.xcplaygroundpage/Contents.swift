@@ -22,4 +22,4 @@ blockOperation.start()
 print("Block Operation is serial so this line will be executed after blockOperation ends.")
 //:  So, if you want your operation to be fully concurrent, you must implement the appropriate functionality in an Operation's subclass.
 
-//: [Next](@next)
+//: [Operation Queues](@next)

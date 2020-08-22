@@ -6,5 +6,7 @@
         <page name='DispatchSemaphores'/>
         <page name='DispatchWorkItems'/>
         <page name='BlockOperations'/>
+        <page name='OperationQueues'/>
+        <page name='SubclassingOperations'/>
     </pages>
 </playground>
