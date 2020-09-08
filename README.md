@@ -200,3 +200,64 @@ customOperation.completionBlock = {
 customOperation.start()
 ```
 Note that this code is synchronous because in the for in loop we don't add any execution blocks.
+
+## Asynchronous Operations
+You can create reusable asynchronous operations by creating and subclassing custom `AsynchronousOperation` class.
+`AsynchronousOperation` is a subclass of `Operation` class and it overrides `isReady`, `isExecuting` and `isFinished` properties that allow us to manually finish or delay the operation.
+For example, the code below will implement `AsynchronousOperation` and its subclass that will be used for image downloading.
+```swift
+class AsynchronousOpeation: Operation {
+    enum State: String {
+        case ready
+        case executing
+        case finished
+        
+        var key: String { "is\(rawValue.capitalized)" }
+    }
+    var state = State.ready {
+        willSet {
+            willChangeValue(forKey: newValue.key)
+            willChangeValue(forKey: state.key)
+        } didSet {
+            didChangeValue(forKey: oldValue.key)
+            didChangeValue(forKey: state.key)
+        }
+    }
+    final override public var isAsynchronous: Bool { true }
+    
+    override public var isReady: Bool { super.isReady && state == .ready }
+    override public var isExecuting: Bool { state == .executing }
+    override public var isFinished: Bool { state == .finished }
+    
+    final override func start() {
+        main()
+        state = .executing
+    }
+}
+class ImageFromNetworkOperation: AsynchronousOpeation {
+    var urlToImage: String
+    let completion: (UIImage) -> Void
+    
+    init(urlToImage: String, completion: @escaping (UIImage) -> Void) {
+        self.urlToImage = urlToImage
+        self.completion = completion
+    }
+    
+    override func main() {
+        DispatchQueue.global(qos: .utility).async {
+            guard let url = URL(string: self.urlToImage),
+                  let data = try? Data(contentsOf: url),
+                  let image = UIImage(data: data) else { return }
+            self.completion(image)
+            self.state = .finished
+        }
+    }
+}
+let urlToImage = "https://picsum.photos/seed/picsum/200/300"
+let imageOperation = ImageFromNetworkOperation(urlToImage: urlToImage) { (image) in
+    DispatchQueue.main.async {
+        imageView.image = image
+    }
+}
+imageOperation.start()
+```
