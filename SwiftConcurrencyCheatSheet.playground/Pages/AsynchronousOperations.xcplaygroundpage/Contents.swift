@@ -27,12 +27,17 @@ class AsynchronousOperation: Operation {
         }
     }
     final override public var isAsynchronous: Bool { true }
-    
     override public var isReady: Bool { super.isReady && state == .ready }
     override public var isExecuting: Bool { state == .executing }
     override public var isFinished: Bool { state == .finished }
     
+    override func cancel() { state = .finished }
     final override func start() {
+        guard !isCancelled else {
+            state = .finished
+            return
+        }
+        
         main()
         state = .executing
     }

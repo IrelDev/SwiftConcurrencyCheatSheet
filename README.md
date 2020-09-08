@@ -206,7 +206,7 @@ You can create reusable asynchronous operations by creating and subclassing cust
 `AsynchronousOperation` is a subclass of `Operation` class and it overrides `isReady`, `isExecuting` and `isFinished` properties that allow us to manually finish or delay the operation.
 For example, the code below will implement `AsynchronousOperation` and its subclass that will be used for image downloading.
 ```swift
-class AsynchronousOpeation: Operation {
+class AsynchronousOperation: Operation {
     enum State: String {
         case ready
         case executing
@@ -224,17 +224,22 @@ class AsynchronousOpeation: Operation {
         }
     }
     final override public var isAsynchronous: Bool { true }
-    
     override public var isReady: Bool { super.isReady && state == .ready }
     override public var isExecuting: Bool { state == .executing }
     override public var isFinished: Bool { state == .finished }
     
+    override func cancel() { state = .finished }
     final override func start() {
+        guard !isCancelled else {
+            state = .finished
+            return
+        }
+        
         main()
         state = .executing
     }
 }
-class ImageFromNetworkOperation: AsynchronousOpeation {
+class ImageFromNetworkOperation: AsynchronousOperation {
     var urlToImage: String
     let completion: (UIImage) -> Void
     
