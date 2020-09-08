@@ -1,7 +1,7 @@
 //: [Operation Queues](@previous)
 /*:
  # Subclassing Operations
- You can create reusable operations by subclassing Operation class. For example, the code below is the synchronous re-implementation of code used in the Block Operations section.
+ You can create reusable operations by subclassing Operation class. For example, the code below is the synchronous reimplementation of code used in the Block Operations section.
  */
 import Foundation
 
