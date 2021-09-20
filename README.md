@@ -25,10 +25,12 @@ The **MAIN** queue is the  dispatch queue associated with the main thread that's
 You should **NEVER** execute something synchronously in the main queue unless it is related to the UI. Otherwise, it will freeze your app until your synchronous task is completed. 
 
 In addition, all `DispatchQueue.main.sync` calls should **NEVER** be called from the 
-main thread, otherwise, it will cause deadlock. 
+main async thread, otherwise, it will cause deadlock. 
 ```swift
 DispatchQueue.main.async {
-    tableView.reloadData()
+    DispatchQueue.main.sync {
+        tableView.reloadData()
+    }
 }
 ```
 
