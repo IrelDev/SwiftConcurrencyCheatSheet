@@ -68,7 +68,8 @@ let dispatchGroup = DispatchGroup()
 
 DispatchQueue.global(qos: .background).async {
     print("Work One")
-    
+
+    dispatchGroup.enter()
     DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
         print("Work Two")
         dispatchGroup.leave()
