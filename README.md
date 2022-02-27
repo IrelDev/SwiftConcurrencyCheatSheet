@@ -18,8 +18,6 @@ let cuncurrentQueue = DispatchQueue(label: "cuncurrent", attributes: .concurrent
 ### ASYNCHRONOUS DOES NOT MEAN CONCURRENT 
 An **ASYNCHRONOUS** queue executes the task in another thread, while a **SYNCHRONOUS** queue just waits for the task to complete before executing the next one. 
 
-If you call `serialQueue.async { }` it will behave exactly like `serialQueue.sync { }` because there is only one thread available so the second task can't be started.
-
 ## Main Queue
 The **MAIN** queue is the  dispatch queue associated with the main thread that's responsible for UI. 
 You should **NEVER** execute something synchronously in the main queue unless it is related to the UI. Otherwise, it will freeze your app until your synchronous task is completed. 
